@@ -1,0 +1,589 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistema Gestione Rapporti</title>
+    <style>
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes slideIn {
+            from { transform: translateX(-100%); }
+            to { transform: translateX(0); }
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: url('/api/placeholder/1920/1080') center/cover fixed;
+            min-height: 100vh;
+            padding: 20px;
+            color: #333;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px;
+            background: rgba(58, 58, 58, 0.95);
+            border-radius: 15px;
+            margin-bottom: 30px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            animation: slideIn 0.8s ease-out;
+            backdrop-filter: blur(10px);
+        }
+
+        .header img {
+            width: 100px;
+            height: 100px;
+            transition: transform 0.3s ease;
+        }
+
+        .header img:hover {
+            transform: scale(1.1);
+        }
+
+        .header h1 {
+            color: #b1b1b1;
+            text-align: center;
+            font-size: 2.5em;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .section {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 30px;
+            margin-bottom: 30px;
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            animation: fadeIn 0.8s ease-out;
+            backdrop-filter: blur(10px);
+            transition: transform 0.3s ease;
+        }
+
+        .section:hover {
+            transform: translateY(-5px);
+        }
+
+        .section-header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid #e0e0e0;
+        }
+
+        .section-header img {
+            width: 150px;
+            height: 150px;
+            margin-bottom: 15px;
+            animation: pulse 2s infinite;
+        }
+
+        .section-header h2 {
+            color: #b1b1b1;
+            font-size: 2em;
+            margin-top: 10px;
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+            animation: fadeIn 0.5s ease-out;
+        }
+
+        .auto-section {
+            background: rgba(244, 244, 244, 0.9);
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            border: 1px solid #e0e0e0;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #2c3e50;
+        }
+
+        select, input[type="text"], input[type="number"] {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 1em;
+            transition: all 0.3s ease;
+            background: rgba(255, 255, 255, 0.9);
+        }
+
+        select:focus, input[type="text"]:focus, input[type="number"]:focus {
+            border-color: #3498db;
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.2);
+        }
+
+        .checkbox-group {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 15px;
+            padding: 10px;
+            border-radius: 8px;
+            background: rgba(244, 244, 244, 0.9);
+        }
+
+        .checkbox-group input[type="checkbox"] {
+            width: 20px;
+            height: 20px;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        button {
+            background-color: #3498db;
+            color: white;
+            padding: 15px 30px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            width: 100%;
+            font-size: 1.1em;
+            font-weight: 600;
+            margin-top: 20px;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        button:hover {
+            background-color: #2980b9;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(52, 152, 219, 0.4);
+        }
+
+        button:active {
+            transform: translateY(0);
+        }
+
+        .success-message {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 15px 25px;
+            background-color: #2ecc71;
+            color: white;
+            border-radius: 8px;
+            animation: slideIn 0.5s ease-out;
+            box-shadow: 0 4px 15px rgba(46, 204, 113, 0.4);
+        }
+
+        .error-message {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 15px 25px;
+            background-color: #e74c3c;
+            color: white;
+            border-radius: 8px;
+            animation: slideIn 0.5s ease-out;
+            box-shadow: 0 4px 15px rgba(231, 76, 60, 0.4);
+        }
+
+        @media (max-width: 768px) {
+            .header {
+                flex-direction: column;
+                gap: 15px;
+            }
+
+            .section {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <img src="image/mercato.png" alt="Logo sinistro">
+        <h1>Sistema Gestione Rapporti</h1>
+        <img src="image/mercato.png" alt="Logo destro">
+    </header>
+
+    <section class="section" id="trasporto">
+        <div class="section-header">
+            <img src="image/blacktruck.png" alt="Icona trasporto">
+            <h2>Rapporto Trasporto</h2>
+        </div>
+        <form id="transportForm">
+            <div class="form-group">
+                <label for="autistaCamion">Autista camion:</label>
+                <select id="autistaCamion" required>
+                    <option value="">Seleziona autista</option>
+                    <option value="Lorenzo">Lorenzo</option>
+                    <option value="Scorpione">Scorpione</option>
+                    <option value="Galfra">Galfra</option>
+                    <option value="Dylan">Dylan</option>
+                    <option value="Leonardo">Leonardo</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="numeroAuto">Numero di auto:</label>
+                <select id="numeroAuto" required>
+                    <option value="">Seleziona numero</option>
+                    <option value="1">1</option>
+                    <option value="2">2</option>
+                    <option value="3">3</option>
+                    <option value="4">4</option>
+                    <option value="5">5</option>
+                    <option value="6">6</option>
+                    <option value="7">7</option>
+                    <option value="8">8</option>
+                    <option value="9">9</option>
+                    <option value="10">10</option>
+                </select>
+            </div>
+
+            <div id="autoContainer">
+                <!-- Le sezioni auto verranno generate qui dinamicamente -->
+            </div>
+
+            <div class="form-group">
+                <label for="tipoTrasporto">Tipo di trasporto:</label>
+                <select id="tipoTrasporto" required>
+                    <option value="">Seleziona tipo</option>
+                    <option value="Trasporto Armi">Trasporto Armi</option>
+                    <option value="Munizioni">Munizioni</option>
+                    <option value="Kit Speciali">Kit Speciali</option>
+                </select>
+            </div>
+
+            <div class="checkbox-group">
+                <input type="checkbox" id="trasportoMale">
+                <label for="trasportoMale">Trasporto andato male</label>
+            </div>
+
+            <div class="form-group hidden" id="armiUsateGroup">
+                <label for="armiUsate">Armi usate:</label>
+                <input type="text" id="armiUsate" placeholder="Specifica le armi usate">
+            </div>
+
+            <button type="submit">Invia Rapporto Trasporto</button>
+        </form>
+    </section>
+
+    <section class="section" id="vendita">
+        <div class="section-header">
+            <img src="image/armi.png" alt="Icona vendita">
+            <h2>Rapporto Vendita</h2>
+        </div>
+        <form id="saleForm">
+            <div class="form-group">
+                <label for="nomiCoinvolti">Nome Venditore:</label>
+                <select id="nomiCoinvolti" required>
+                    <option value="">Seleziona nome</option>
+                    <option value="Lorenzo">Lorenzo</option>
+                    <option value="Scorpione">Scorpione</option>
+                    <option value="Galfra">Galfra</option>
+                    <option value="Dylan">Dylan</option>
+                    <option value="Leonardo">Leonardo</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="famigliaAcquirente">Famiglia acquirente:</label>
+                <select id="famigliaAcquirente" required>
+                    <option value="">Seleziona famiglia</option>
+                    <option value="Famiglia Genovese">Famiglia Genovese</option>
+                    <option value="Famiglia Yacuza">Famiglia Yacuza</option>
+                    <option value="Famiglia Gambino">Famiglia Gambino</option>
+                    <option value="Famiglia Denaro">Famiglia Denaro</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="armiVendute">Armi vendute:</label>
+                <input type="text" id="armiVendute" placeholder="Specifica le armi vendute" required>
+            </div>
+
+            <div class="form-group">
+                <label for="munizioniVendute">Munizioni vendute:</label>
+                <input type="text" id="munizioniVendute" placeholder="Specifica le munizioni vendute" required>
+            </div>
+
+            <div class="form-group">
+                <label for="kitVenduti">Kit speciali venduti:</label>
+                <input type="text" id="kitVenduti" placeholder="Specifica i kit venduti" required>
+            </div>
+
+            <div class="form-group">
+                <label for="personePresenti">Persone presenti:</label>
+                <input type="text" id="personePresenti" placeholder="Specifica le persone presenti" required>
+            </div>
+
+            <button type="submit">Invia Rapporto Vendita</button>
+        </form>
+    </section>
+
+    <script>
+        // Funzione per creare le sezioni auto dinamicamente
+        function createAutoSections(number) {
+            const container = document.getElementById('autoContainer');
+            container.innerHTML = ''; // Pulisce il contenitore
+
+            for (let i = 1; i <= number; i++) {
+                const section = document.createElement('div');
+                section.className = 'auto-section';
+                section.style.animation = `fadeIn ${0.3 + (i * 0.1)}s ease-out`;
+                
+                section.innerHTML = `
+                    <h3 style="margin-bottom: 15px; color: #2c3e50;">Auto ${i}</h3>
+                    <div class="form-group">
+                        <label for="autistaAuto${i}">Autista auto ${i}:</label>
+                        <select id="autistaAuto${i}" required>
+                            <option value="">Seleziona autista</option>
+                            <option value="Lorenzo">Lorenzo</option>
+                            <option value="Scorpione">Scorpione</option>
+                            <option value="Galfra">Galfra</option>
+                            <option value="Dylan">Dylan</option>
+                            <option value="Leonardo">Leonardo</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="tipoAuto${i}">Auto ${i} usata:</label>
+                        <input type="text" id="tipoAuto${i}" placeholder="Specifica il tipo di auto" required>
+                    </div>
+                `;
+                
+                container.appendChild(section);
+            }
+        }
+
+        // Event listener per il numero di auto
+        document.getElementById('numeroAuto').addEventListener('change', function() {
+            const number = parseInt(this.value) || 0;
+            createAutoSections(number);
+        });
+
+        // Gestione del checkbox per il trasporto andato male
+        document.getElementById('trasportoMale').addEventListener('change', function() {
+            const armiUsateGroup = document.getElementById('armiUsateGroup');
+            armiUsateGroup.classList.toggle('hidden', !this.checked);
+            document.getElementById('armiUsate').required = this.checked;
+        });
+
+        // Funzione per mostrare messaggi di feedback
+        function showMessage(message, isError = false) {
+            const div = document.createElement('div');
+            div.className = isError ? 'error-message' : 'success-message';
+            div.textContent = message;
+            document.body.appendChild(div);
+            
+            setTimeout(() => {
+                div.style.animation = 'fadeOut 0.5s ease-out';
+                setTimeout(() => {
+                    document.body.removeChild(div);
+                }, 500);
+            }, 3000);
+        }
+
+        // Funzione per raccogliere i dati delle auto
+        function getAutoData(numberOfAutos) {
+            const autoData = [];
+            for (let i = 1; i <= numberOfAutos; i++) {
+                autoData.push({
+                    autista: document.getElementById(`autistaAuto${i}`).value,
+                    tipo: document.getElementById(`tipoAuto${i}`).value
+                });
+            }
+            return autoData;
+        }
+
+    // Funzione per inviare il rapporto di trasporto
+        document.getElementById('transportForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const numeroAuto = parseInt(document.getElementById('numeroAuto').value);
+            const autoData = getAutoData(numeroAuto);
+            
+            const data = {
+                autistaCamion: document.getElementById('autistaCamion').value,
+                numeroAuto: numeroAuto,
+                autoData: autoData,
+                tipoTrasporto: document.getElementById('tipoTrasporto').value,
+                trasportoMale: document.getElementById('trasportoMale').checked,
+                armiUsate: document.getElementById('trasportoMale').checked ? document.getElementById('armiUsate').value : null
+            };
+
+            const webhookUrl = 'https://discord.com/api/webhooks/1329821427565854781/1V64FFgLzddQ6EQmmaSovysRs6mBhQn9wC6O2tvgGf5Zu5iUCKnL4pQgRgzoLFhGqOGt';
+
+            try {
+                const autoFields = data.autoData.map((auto, index) => ({
+                    name: `Auto ${index + 1}`,
+                    value: `**Autista:** ${auto.autista}\n**Tipo Auto:** ${auto.tipo}`,
+                    inline: true
+                }));
+
+                const embedData = {
+                    embeds: [{
+                        title: "📝 Nuovo Rapporto Trasporto",
+                        color: 3447003, // Blu
+                        fields: [
+                            {
+                                name: "🚛 Autista Camion",
+                                value: data.autistaCamion,
+                                inline: true
+                            },
+                            {
+                                name: "🚗 Numero Auto",
+                                value: data.numeroAuto.toString(),
+                                inline: true
+                            },
+                            {
+                                name: "📦 Tipo Trasporto",
+                                value: data.tipoTrasporto,
+                                inline: true
+                            },
+                            ...autoFields,
+                            {
+                                name: "⚠️ Stato Trasporto",
+                                value: data.trasportoMale ? "❌ Trasporto Andato Male" : "✅ Trasporto Completato",
+                                inline: false
+                            }
+                        ],
+                        timestamp: new Date().toISOString(),
+                        footer: {
+                            text: "Sistema Gestione Rapporti"
+                        }
+                    }]
+                };
+
+                // Aggiungi il campo delle armi usate solo se il trasporto è andato male
+                if (data.armiUsate) {
+                    embedData.embeds[0].fields.push({
+                        name: "🔫 Armi Usate",
+                        value: data.armiUsate,
+                        inline: false
+                    });
+                }
+
+                const response = await fetch(webhookUrl, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(embedData)
+                });
+
+                if (response.ok) {
+                    showMessage('Rapporto trasporto inviato con successo!');
+                    this.reset();
+                    document.getElementById('autoContainer').innerHTML = '';
+                } else {
+                    throw new Error('Errore nell\'invio del rapporto');
+                }
+            } catch (error) {
+                showMessage('Errore nell\'invio del rapporto: ' + error.message, true);
+            }
+        });
+
+        // Funzione per inviare il rapporto di vendita
+        document.getElementById('saleForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const data = {
+                nomiCoinvolti: document.getElementById('nomiCoinvolti').value,
+                famigliaAcquirente: document.getElementById('famigliaAcquirente').value,
+                armiVendute: document.getElementById('armiVendute').value,
+                munizioniVendute: document.getElementById('munizioniVendute').value,
+                kitVenduti: document.getElementById('kitVenduti').value,
+                personePresenti: document.getElementById('personePresenti').value
+            };
+
+            const webhookUrl = 'https://discord.com/api/webhooks/1329957630390567022/epTBk1fhlmRWJYbyruICs5RtMH74HguJJ0_1EWgOHKxtHsxWU4WiCXCbLwnuyn-a-t7x';
+
+            try {
+                const embedData = {
+                    embeds: [{
+                        title: "💰 Nuovo Rapporto Vendita",
+                        color: 15844367, // Oro
+                        fields: [
+                            {
+                                name: "👤 Venditore",
+                                value: data.nomiCoinvolti,
+                                inline: true
+                            },
+                            {
+                                name: "🏢 Famiglia Acquirente",
+                                value: data.famigliaAcquirente,
+                                inline: true
+                            },
+                            {
+                                name: "\u200b",
+                                value: "\u200b",
+                                inline: true
+                            },
+                            {
+                                name: "🔫 Armi Vendute",
+                                value: data.armiVendute,
+                                inline: false
+                            },
+                            {
+                                name: "🎯 Munizioni Vendute",
+                                value: data.munizioniVendute,
+                                inline: false
+                            },
+                            {
+                                name: "📦 Kit Venduti",
+                                value: data.kitVenduti,
+                                inline: false
+                            },
+                            {
+                                name: "👥 Persone Presenti",
+                                value: data.personePresenti,
+                                inline: false
+                            }
+                        ],
+                        timestamp: new Date().toISOString(),
+                        footer: {
+                            text: "Sistema Gestione Rapporti"
+                        }
+                    }]
+                };
+
+                const response = await fetch(webhookUrl, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(embedData)
+                });
+
+                if (response.ok) {
+                    showMessage('Rapporto vendita inviato con successo!');
+                    this.reset();
+                } else {
+                    throw new Error('Errore nell\'invio del rapporto');
+                }
+            } catch (error) {
+                showMessage('Errore nell\'invio del rapporto: ' + error.message, true);
+            }
+        });
+    </script>
+</body>
+</html>
